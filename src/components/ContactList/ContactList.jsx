@@ -1,12 +1,27 @@
 import { ContactListEl } from 'components/ContactList/ContactList.styled';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
-import { getContacts, getFilter } from 'redux/selectors';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+import { deleteContact, fetchContacts } from 'redux/contactsOperations';
+import {
+    getContacts,
+    getError,
+    getFilter,
+    getIsLoading,
+} from 'redux/selectors';
+import { Oval } from 'react-loader-spinner';
 
 export function ContactList() {
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(fetchContacts());
+    }, [dispatch]);
+
     const contacts = useSelector(getContacts);
+    const isLoading = useSelector(getIsLoading);
+    const error = useSelector(getError);
     const filter = useSelector(getFilter);
 
     const normalizedFilter = filter.toLowerCase();
@@ -21,22 +36,38 @@ export function ContactList() {
 
     return (
         <ContactListEl>
-            {filteredContacts.map(({ id, name, number }) => {
-                return (
-                    <li key={id}>
-                        <span>
-                            {name}: {number}
-                        </span>
-                        <button
-                            id={id}
-                            type="button"
-                            onClick={handleDeleteClick}
-                        >
-                            Delete
-                        </button>
-                    </li>
-                );
-            })}
+            {filteredContacts.length > 0 &&
+                filteredContacts.map(({ id, name, phone }) => {
+                    return (
+                        <li key={id}>
+                            <span>
+                                {name}: {phone}
+                            </span>
+                            <button
+                                id={id}
+                                type="button"
+                                onClick={handleDeleteClick}
+                            >
+                                Delete
+                            </button>
+                        </li>
+                    );
+                })}
+            {isLoading && (
+                <Oval
+                    height={40}
+                    width={40}
+                    color="#4fa94d"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="oval-loading"
+                    secondaryColor="#4fa94d"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                />
+            )}
+            {error && Notify.failure(error)}
         </ContactListEl>
     );
 }

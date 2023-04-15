@@ -1,21 +1,39 @@
 import { Formik, Field, ErrorMessage } from 'formik';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import { FormStyled } from 'components/ContactForm/ContactForm.styled';
-import { addContact } from 'redux/contactsSlice';
 import { schema } from './schema';
+import { addContact } from 'redux/contactsOperations';
+import { getContacts } from 'redux/selectors';
 
 export function ContactForm() {
     const dispatch = useDispatch();
 
+    const contacts = useSelector(getContacts);
+
     const initialValues = {
         name: '',
-        number: '',
+        phone: '',
     };
 
     const handleSubmit = (values, { resetForm }) => {
-        dispatch(addContact(values));
-        resetForm();
+        let isNameRepeat = false;
+        contacts.map(contact => {
+            if (contact.name.toLowerCase() === values.name.toLowerCase()) {
+                Notify.failure(`${contact.name} is already in contacts.`);
+                isNameRepeat = true;
+            }
+            return null;
+        });
+
+        if (isNameRepeat) {
+            return;
+        } else {
+            dispatch(addContact(values));
+            resetForm();
+            return;
+        }
     };
 
     return (
@@ -32,8 +50,8 @@ export function ContactForm() {
                 </label>
                 <label>
                     <p>Number</p>
-                    <Field type="tel" name="number" />
-                    <ErrorMessage component="div" name="number" />
+                    <Field type="tel" name="phone" />
+                    <ErrorMessage component="div" name="phone" />
                 </label>
                 <button type="submit">Add contact</button>
             </FormStyled>

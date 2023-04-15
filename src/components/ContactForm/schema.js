@@ -17,7 +17,7 @@ const invalidPhoneMessage =
 
 export const schema = yup.object({
     name: yup.string().isValidName(nameRegex, invalidNameMessage).required(),
-    number: yup
+    phone: yup
         .string()
         .isValidPhone(phoneRegex, invalidPhoneMessage)
         .min(7)
