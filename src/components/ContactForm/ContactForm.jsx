@@ -5,12 +5,12 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { FormStyled } from 'components/ContactForm/ContactForm.styled';
 import { schema } from './schema';
 import { addContact } from 'redux/contactsOperations';
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 
 export function ContactForm() {
     const dispatch = useDispatch();
 
-    const contacts = useSelector(getContacts);
+    const contacts = useSelector(selectContacts);
 
     const initialValues = {
         name: '',

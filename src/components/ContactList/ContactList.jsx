@@ -5,10 +5,10 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import { deleteContact, fetchContacts } from 'redux/contactsOperations';
 import {
-    getContacts,
-    getError,
-    getFilter,
-    getIsLoading,
+    selectContacts,
+    selectError,
+    selectFilter,
+    selectIsLoading,
 } from 'redux/selectors';
 import { Oval } from 'react-loader-spinner';
 
@@ -19,10 +19,10 @@ export function ContactList() {
         dispatch(fetchContacts());
     }, [dispatch]);
 
-    const contacts = useSelector(getContacts);
-    const isLoading = useSelector(getIsLoading);
-    const error = useSelector(getError);
-    const filter = useSelector(getFilter);
+    const contacts = useSelector(selectContacts);
+    const isLoading = useSelector(selectIsLoading);
+    const error = useSelector(selectError);
+    const filter = useSelector(selectFilter);
 
     const normalizedFilter = filter.toLowerCase();
 
